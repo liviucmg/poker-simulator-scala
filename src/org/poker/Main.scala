@@ -1,6 +1,6 @@
 package org.poker
 
-import Helpers.randomNumber
+import Helper.randomNumber
 
 object Main {
   def main(args: Array[String]) {

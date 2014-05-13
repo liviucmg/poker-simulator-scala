@@ -1,7 +1,7 @@
 package org.poker
 
 import scala.actors.Actor
-import Helpers.randomNumber
+import Helper.randomNumber
 
 class PokerEngine(numberOfPlayers: Int) extends Actor {
   var players = List[Player]()
