@@ -1,19 +1,16 @@
 package org.poker
 
-import Helper.randomNumber
+import Helper.getRandomInt
 
 object Main {
-  case class CommunityCard (card: Int)
-  case class PrivateCard (card: Int)
-
   def main(args: Array[String]) {
-    val numberOfPlayers = randomNumber(2, 22)
+    val numberOfPlayers = getRandomInt(3, 4)
 
-    Console.println("Starting game with " + numberOfPlayers + " players.");
+    Console.println("Starting game with " + numberOfPlayers + " players.")
 
     // Create players.
     var players = List[Player]()
-    for (i <- 1 to numberOfPlayers) {
+    for (i <- 0 to numberOfPlayers - 1) {
       val player = new Player(i)
       player.start()
       players = players :+ player

@@ -1,34 +1,69 @@
 package org.poker
 
 import scala.actors.Actor
-import org.poker.Main.{PrivateCard, CommunityCard}
 import Helper._
 
 class Player(id: Int) extends Actor {
   var cards: List[Int] = List[Int]()
+
+  var playerBet: Int = 0
 
   def act() {
     loop {
       react {
         case PrivateCard(card) =>
           cards = cards :+ card
-          Console.println("Player " + id + ": Got private card " + getCardName(card) + ". My score is " + getScore() + ".");
+//          log("Got private card " + getCardName(card) + ". My score is " + getScore() + ".");
 
         case CommunityCard(card) =>
           cards = cards :+ card
-          Console.println("Player " + id + ": Got community card " + getCardName(card) + ". My score is " + getScore() + ".");
+//          log("Saw community card " + getCardName(card) + ". My score is " + getScore() + ".");
+
+        case Turn(currentBet) =>
+          val score = getScore()
+          logHand()
+
+          val chancesToFold = (10000 - score.toFloat) / 100000
+
+          if (getRandomFloat() < chancesToFold) {
+            sender ! PlayerFold(id)
+            log("Fold.")
+          }
+          else {
+            val chancesToRaise = score.toFloat / 10000
+
+            if (getRandomFloat() < chancesToRaise) {
+              val raise = getRandomInt(50, 100)
+              sender ! PlayerRaise(id, score, currentBet - playerBet + raise, raise)
+              playerBet = currentBet + raise
+              log("Raise by $" + raise + ".")
+            }
+            else {
+              if (playerBet < currentBet) {
+                val additionalPot = currentBet - playerBet
+                playerBet = currentBet
+                log("Call (give $" + additionalPot + ").")
+                sender ! PlayerCall(id, score, additionalPot)
+              }
+              else {
+                log("Check.")
+                sender ! PlayerCheck(id, score)
+              }
+            }
+          }
       }
     }
   }
 
-  // Get the player's current score based on his private card and the community cards.
+  // Get the player's current score based on his private cards and the community cards.
+  // Note that this implementation is just for show. It is incomplete and flawed.
   def getScore(): Int = {
     var score: Int = 0
 
     // How many cards of each number.
-    var cardsOfEachNumber: List[Int] = List.fill(13)(0);
+    var cardsOfEachNumber: List[Int] = List.fill(13)(0)
     for (i <- 0 to cards.length - 1) {
-      val number = getCardNumber(cards(i));
+      val number = getCardNumber(cards(i))
       cardsOfEachNumber = cardsOfEachNumber.updated(number, cardsOfEachNumber(number) + 1)
     }
 
@@ -87,5 +122,22 @@ class Player(id: Int) extends Actor {
     }
 
     score
+  }
+
+  def log(message: String) {
+    Console.println("Player " + (id + 1) + ": " + message)
+  }
+
+  def logHand() {
+    var cardNames: String = ""
+
+    for (i <- 0 to cards.length - 1) {
+      if (i > 0) {
+        cardNames = cardNames + ", "
+      }
+      cardNames = cardNames + getCardName(cards(i))
+    }
+
+    log("My cards are: " + cardNames + " and my score is " + getScore() + ".")
   }
 }

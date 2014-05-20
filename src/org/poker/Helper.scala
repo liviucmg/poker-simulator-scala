@@ -1,10 +1,23 @@
 package org.poker
 
 object Helper {
+  case class CommunityCard (card: Int)
+  case class PrivateCard (card: Int)
+  case class Turn (currentBet: Int)
+  case class PlayerCheck (playerId: Int, score: Int)
+  case class PlayerCall (playerId: Int, score: Int, additionalPot: Int)
+  case class PlayerRaise (playerId: Int, score: Int, additionalPot:Int, additionalBet: Int)
+  case class PlayerFold (playerId: Int)
+
   val random = new scala.util.Random
 
-  def randomNumber(min: Int, max: Int): Int = {
+  def getRandomInt(min: Int, max: Int): Int = {
     min + random.nextInt(max - min)
+  }
+
+  // Get a random float between 0 and 1.
+  def getRandomFloat(): Float = {
+    random.nextFloat()
   }
 
   def getCardNumber(card: Int): Int = {
@@ -18,23 +31,23 @@ object Helper {
   def getCardName(card: Int): String = {
     val number = {
       getCardNumber(card) match {
-        case 9 => "Jack"
-        case 10 => "Queen"
-        case 11 => "King"
-        case 12 => "Ace"
+        case 9 => "J"
+        case 10 => "Q"
+        case 11 => "K"
+        case 12 => "A"
         case default => default + 2
       }
     }
 
     val color = {
       getCardColor(card) match {
-        case 0 => "Spades"
-        case 1 => "Hearts"
-        case 2 => "Diamonds"
-        case 3 => "Clubs"
+        case 0 => "♠"
+        case 1 => "♥"
+        case 2 => "♦"
+        case 3 => "♣"
       }
     }
 
-    number + " of " + color
+    number + color
   }
 }
