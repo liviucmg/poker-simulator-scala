@@ -8,7 +8,16 @@ object Main {
   def main(args: Array[String]) {
     val numberOfPlayers = randomNumber(2, 22)
 
-    val pokerEngine = new PokerEngine(numberOfPlayers)
-    pokerEngine.start()
+    // Create players.
+    var players = List[Player]()
+    for (i <- 1 to numberOfPlayers) {
+      val player = new Player(i)
+      player.start()
+      players = players :+ player
+    }
+
+    // Create dealer.
+    val dealer = new Dealer(players)
+    dealer.start()
   }
 }
