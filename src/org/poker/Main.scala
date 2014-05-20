@@ -4,6 +4,7 @@ import Helper.randomNumber
 
 object Main {
   case class CommunityCard (card: Int)
+  case class PrivateCard (card: Int)
 
   def main(args: Array[String]) {
     val numberOfPlayers = randomNumber(2, 22)

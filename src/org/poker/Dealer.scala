@@ -3,7 +3,7 @@ package org.poker
 import scala.actors.Actor
 import org.poker.Helper._
 import scala.util.control.Breaks._
-import org.poker.Main.CommunityCard
+import org.poker.Main.{PrivateCard, CommunityCard}
 
 class Dealer(players: List[Player]) extends Actor {
   // The number of remaining cards in the deck.
@@ -14,9 +14,11 @@ class Dealer(players: List[Player]) extends Actor {
 
   def act() {
     // Deal 2 cards to each player.
-    for (i <- 1 to players.length) {
+    for (i <- 0 to players.length - 1) {
       for (j <- 1 to 2) {
         val card = drawCard()
+
+        players(i) ! PrivateCard(card)
       }
     }
 
