@@ -8,6 +8,8 @@ object Main {
   def main(args: Array[String]) {
     val numberOfPlayers = randomNumber(2, 22)
 
+    Console.println("Starting game with " + numberOfPlayers + " players.");
+
     // Create players.
     var players = List[Player]()
     for (i <- 1 to numberOfPlayers) {
