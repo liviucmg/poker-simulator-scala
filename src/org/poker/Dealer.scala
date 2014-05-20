@@ -10,7 +10,7 @@ class Dealer(players: List[Player]) extends Actor {
   var numberOfCardsInDeck = 52
 
   // True if the card is still in the deck, false otherwise.
-  val cardsInDeck = Array.fill[Boolean](52)(true)
+  var cardsInDeck = Array.fill[Boolean](52)(true)
 
   def act() {
     // Deal 2 cards to each player.
@@ -44,12 +44,17 @@ class Dealer(players: List[Player]) extends Actor {
         if (cardsInDeck(i)) {
           j += 1
           if (j == n) {
-            numberOfCardsInDeck -= 1
             card = i
             break()
           }
         }
       }
+    }
+
+    // Mark the card as being removed from the deck.
+    if (card != -1) {
+      cardsInDeck = cardsInDeck.updated(card, false)
+      numberOfCardsInDeck -= 1
     }
 
     // Return the card picked.
